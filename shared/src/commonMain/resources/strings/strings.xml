@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <!-- Authentication -->
+    <!-- App Name -->
+    <string name="app_name">KommHotel</string>
+
+    <!-- UI Labels &amp; Buttons -->
+    <string name="label_welcome">Welcome!</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="button_login">Login</string>
+    <string name="button_register">Register</string>
+
+    <!-- API Error Messages -->
     <string name="auth_error_user_exists">User with this email already exists.</string>
     <string name="auth_error_user_not_found">User not found.</string>
     <string name="auth_error_invalid_credentials">Invalid credentials.</string>
 
-    <!-- API Keys -->
+    <!-- API Keys (internal) -->
     <string name="api_key_token">token</string>
 </resources>

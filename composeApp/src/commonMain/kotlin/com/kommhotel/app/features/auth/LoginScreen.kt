@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.kommhotel.app.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Displays the login/registration screen.
@@ -33,14 +35,14 @@ fun LoginScreen(onLoginSuccess: (sessionId: String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Welcome!")
+        Text(stringResource(Res.string.label_welcome))
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") }
+            label = { Text(stringResource(Res.string.label_email)) }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -48,24 +50,22 @@ fun LoginScreen(onLoginSuccess: (sessionId: String) -> Unit) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text(stringResource(Res.string.label_password)) },
             visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            // TODO: Implement real login logic (network call).
-            // For now, simulate a successful login.
             onLoginSuccess("fake-session-id-12345")
         }) {
-            Text("Login")
+            Text(stringResource(Res.string.button_login))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(onClick = { /* TODO: Implement registration logic */ }) {
-            Text("Register")
+            Text(stringResource(Res.string.button_register))
         }
     }
 }
