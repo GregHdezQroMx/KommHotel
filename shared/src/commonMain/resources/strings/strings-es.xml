@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Autenticación -->
+    <string name="auth_error_user_exists">El usuario con este correo electrónico ya existe.</string>
+    <string name="auth_error_user_not_found">Usuario no encontrado.</string>
+    <string name="auth_error_invalid_credentials">Credenciales inválidas.</string>
+
+    <!-- Claves de API -->
+    <string name="api_key_token">token</string>
+</resources>
