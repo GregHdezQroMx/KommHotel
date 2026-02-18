@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="07978e69-e073-4ec0-888a-26097da64425" name="Changes" comment="" />
+    <list default="true" id="07978e69-e073-4ec0-888a-26097da64425" name="Changes" comment="Dummy data for first endpoint rooms for server module" />
+    <list id="1d36e9e6-c79f-4184-8876-74f9022260c4" name="Updates" comment="Create server module for back-end and dummy data for rooms endpoint">
+      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shared/src/commonMain/kotlin/com/kommhotel/shared/model/GuestPreferences.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,7 +46,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.14.3-bin/cv11ve7ro1n3o1j4so8xd9n66/gradle-8.14.3" javaHome="$APPLICATION_HOME_DIR$/jbr/Contents/Home" gradleVersion="8.14.3">
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "GregHdezQroMx"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/GregHdezQroMx/KommHotel.git",
+    "accountId": "e05439d4-d03a-45e7-892d-f615b6c8b97a"
+  }
+}]]></component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-9.0.0-bin/d6wjpkvcgsg3oed0qlfss3wgl/gradle-9.0.0" javaHome="$APPLICATION_HOME_DIR$/jbr/Contents/Home" gradleVersion="9.0.0">
     <option name="jvmArguments">
       <list>
         <option value="-Didea.compose.hot-reload=true" />
@@ -63,6 +82,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/ghetz/Documents/PORTAFOLIO/ANDROID/BUSSINESS/HOTEL/KommHotel"
   }
@@ -232,11 +252,34 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="07978e69-e073-4ec0-888a-26097da64425" name="Changes" comment="" />
+      <changelist id="1d36e9e6-c79f-4184-8876-74f9022260c4" name="Updates" comment="" />
       <created>1771417297000</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1771417297000</updated>
     </task>
+    <task id="LOCAL-00001" summary="First domain models">
+      <option name="closed" value="true" />
+      <created>1771421845959</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1771421845960</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Create server module for back-end and dummy data for rooms endpoint">
+      <option name="closed" value="true" />
+      <created>1771421970635</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771421970635</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First domain models" />
+    <MESSAGE value="Create server module for back-end and dummy data for rooms endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create server module for back-end and dummy data for rooms endpoint" />
   </component>
 </project>
