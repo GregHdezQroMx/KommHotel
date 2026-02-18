@@ -1,5 +1,6 @@
 package com.kommhotel.server
 
+import com.kommhotel.server.routes.authRoutes
 import com.kommhotel.server.routes.roomRoutes
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -27,7 +28,8 @@ fun Application.module() {
             call.respondText("Server is healthy!")
         }
 
-        // Registra las rutas de las habitaciones
+        // Registra las rutas de autenticación y de habitaciones
+        authRoutes()
         roomRoutes()
     }
 }
