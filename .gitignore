@@ -1,0 +1,23 @@
+# IDE files
+.idea/
+*.iml
+
+# Build directories
+build/
+/server/build/
+/composeApp/build/
+/shared/build/
+
+# Gradle cache
+.gradle/
+
+# Local properties
+local.properties
+
+# KSP generated files
+shared/build/generated/ksp/
+
+# Other
+.DS_Store
+/captures/
+*.log
