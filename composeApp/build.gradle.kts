@@ -105,7 +105,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.jght.pos.cmp.kommpos.MainKt"
+        mainClass = "com.kommhotel.app.MainKt" // <-- CORRECTED
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
