@@ -10,7 +10,7 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    androidTarget { 
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.components.resources)
+            implementation(compose.components.resources)
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
@@ -76,7 +77,7 @@ kotlin {
 
 // This block is for the androidLibrary plugin
 android {
-    namespace = "com.jght.pos.cmp.kommpos.shared"
+    namespace = "com.kommhotel.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -86,5 +87,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+compose.resources {
+    publicResClass = true
+}
 
-compose.resources.publicResClass = true

@@ -26,7 +26,14 @@ kotlin {
         }
     }
     
-    jvm()
+    jvm() {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+        mainRun {
+            mainClass.set("com.kommhotel.app.MainKt")
+        }
+    }
     
     js {
         browser()
@@ -61,6 +68,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(compose.components.resources)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -73,11 +81,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.jght.pos.cmp.kommpos"
+    namespace = "com.kommhotel.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.jght.pos.cmp.kommpos"
+        applicationId = "com.kommhotel.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -105,11 +113,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.kommhotel.app.MainKt" // <-- CORRECTED
+        mainClass = "com.kommhotel.app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.jght.pos.cmp.kommpos"
+            packageName = "com.kommhotel.app"
             packageVersion = "1.0.0"
         }
     }

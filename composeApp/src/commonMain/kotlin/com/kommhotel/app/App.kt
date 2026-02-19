@@ -66,8 +66,9 @@ private fun MainAuthenticatedNav(sessionId: String) {
     val savedStateConfiguration = SavedStateConfiguration {
         serializersModule = SerializersModule {
             polymorphic(NavKey::class) {
+                subclass(Screen.Splash::class)
+                subclass(Screen.Login::class)
                 subclass(Screen.Home::class)
-                // Add other main app screens here
             }
         }
     }

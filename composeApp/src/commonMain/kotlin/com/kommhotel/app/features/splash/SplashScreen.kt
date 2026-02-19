@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.kommhotel.app.generated.resources.Res
-import com.kommhotel.app.generated.resources.app_name
+import kommhotel.shared.generated.resources.Res
+import kommhotel.shared.generated.resources.app_name
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -19,7 +19,6 @@ fun SplashScreen() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        // This text is now loaded from string resources, enabling localization.
         Text(stringResource(Res.string.app_name))
     }
 }

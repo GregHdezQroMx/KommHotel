@@ -18,7 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.kommhotel.app.generated.resources.*
+import kommhotel.shared.generated.resources.Res
+import kommhotel.shared.generated.resources.button_login
+import kommhotel.shared.generated.resources.button_register
+import kommhotel.shared.generated.resources.label_email
+import kommhotel.shared.generated.resources.label_password
+import kommhotel.shared.generated.resources.label_welcome
 import org.jetbrains.compose.resources.stringResource
 
 /**
