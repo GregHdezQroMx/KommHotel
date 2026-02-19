@@ -16,6 +16,7 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.kommhotel.app.features.auth.LoginScreen
 import com.kommhotel.app.features.splash.SplashScreen
 import com.kommhotel.app.navigation.Screen
+import com.kommhotel.shared.di.initKoin
 import kotlinx.coroutines.delay
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -34,12 +35,11 @@ fun App() {
         var appState by remember { mutableStateOf<AppState>(AppState.Loading) }
 
         // This effect simulates the initial loading and authentication check
-        LaunchedEffect(appState) {
-            if (appState is AppState.Loading) {
-                delay(2000) // Show splash for 2 seconds
-                // In a real app, we would check for a saved token here.
-                appState = AppState.LoggedOut // For now, we always go to the login screen
-            }
+        LaunchedEffect(Unit) {
+            initKoin()
+            delay(2000) // Show splash for 2 seconds
+            // In a real app, we would check for a saved token here.
+            appState = AppState.LoggedOut // For now, we always go to the login screen
         }
 
         when (val state = appState) {
@@ -66,9 +66,8 @@ private fun MainAuthenticatedNav(sessionId: String) {
     val savedStateConfiguration = SavedStateConfiguration {
         serializersModule = SerializersModule {
             polymorphic(NavKey::class) {
-                subclass(Screen.Splash::class)
-                subclass(Screen.Login::class)
                 subclass(Screen.Home::class)
+                // Add other main app screens here
             }
         }
     }
