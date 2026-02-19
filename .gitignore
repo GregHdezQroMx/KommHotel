@@ -17,6 +17,9 @@ local.properties
 # KSP generated files
 shared/build/generated/ksp/
 
+# Secrets and keys
+*.jks
+
 # Other
 .DS_Store
 /captures/
