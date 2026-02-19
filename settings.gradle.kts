@@ -20,3 +20,4 @@ rootProject.name = "KommHotel"
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":iosApp") // <-- Register the iosApp module
