@@ -40,7 +40,10 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.components.resources)
-            implementation(compose.components.resources)
+
+            // Ktor Client
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
@@ -48,6 +51,7 @@ kotlin {
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.okio)
+            implementation(libs.ktor.client.android)
         }
         val iosMain by creating {
             dependsOn(commonMain.get())
@@ -55,6 +59,7 @@ kotlin {
                 implementation(libs.androidx.datastore)
                 implementation(libs.androidx.datastore.preferences)
                 implementation(libs.okio)
+                implementation(libs.ktor.client.darwin)
             }
         }
         iosArm64Main.get().dependsOn(iosMain)
@@ -64,6 +69,7 @@ kotlin {
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.okio)
+            implementation(libs.ktor.client.java)
         }
         jsMain.dependencies {
         }
@@ -87,7 +93,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
-compose.resources {
-    publicResClass = true
-}
 
+// Make resource class public for other modules to access
+compose.resources.publicResClass = true

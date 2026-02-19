@@ -7,33 +7,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import kommhotel.shared.generated.resources.Res
-import kommhotel.shared.generated.resources.button_login
-import kommhotel.shared.generated.resources.button_register
-import kommhotel.shared.generated.resources.label_email
-import kommhotel.shared.generated.resources.label_password
-import kommhotel.shared.generated.resources.label_welcome
+import com.kommhotel.shared.presentation.login.LoginViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import kommhotel.shared.generated.resources.*
 
-/**
- * Displays the login/registration screen.
- * @param onLoginSuccess Callback invoked when the user successfully logs in, providing a session ID.
- */
 @Composable
 fun LoginScreen(onLoginSuccess: (sessionId: String) -> Unit) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val viewModel: LoginViewModel = koinInject()
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(uiState.loginSuccessToken) {
+        uiState.loginSuccessToken?.let {
+            onLoginSuccess(it)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -45,32 +45,41 @@ fun LoginScreen(onLoginSuccess: (sessionId: String) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(stringResource(Res.string.label_email)) }
+            value = uiState.email,
+            onValueChange = { viewModel.onEmailChange(it) },
+            label = { Text(stringResource(Res.string.label_email)) },
+            isError = uiState.errorMessage != null
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = { viewModel.onPasswordChange(it) },
             label = { Text(stringResource(Res.string.label_password)) },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            isError = uiState.errorMessage != null
         )
+
+        uiState.errorMessage?.let {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(it, color = Color.Red)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            onLoginSuccess("fake-session-id-12345")
-        }) {
-            Text(stringResource(Res.string.button_login))
-        }
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
+        } else {
+            Button(onClick = { viewModel.login() }) {
+                Text(stringResource(Res.string.button_login))
+            }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = { /* TODO: Implement registration logic */ }) {
-            Text(stringResource(Res.string.button_register))
+            Button(onClick = { /* TODO: Implement registration logic */ }) {
+                Text(stringResource(Res.string.button_register))
+            }
         }
     }
 }
