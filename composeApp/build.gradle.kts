@@ -84,6 +84,16 @@ android {
     namespace = "com.kommhotel.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    sourceSets {
+        getByName("main") {
+            res.srcDirs("src/androidMain/res")
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+        getByName("debug") {
+            res.srcDirs("src/debug/res")
+        }
+    }
+
     defaultConfig {
         applicationId = "com.kommhotel.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -91,16 +101,23 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    // Define build types to enable debug/release specific source sets
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

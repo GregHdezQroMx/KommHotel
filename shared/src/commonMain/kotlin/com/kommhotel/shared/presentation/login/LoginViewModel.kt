@@ -14,7 +14,6 @@ import org.koin.core.component.inject
 
 // A simple base class for our ViewModels
 abstract class ViewModel : KoinComponent {
-    // Child classes will provide their own scope
     protected abstract val scope: CoroutineScope
 
     fun clear() {
@@ -50,13 +49,25 @@ class LoginViewModel : ViewModel() {
             val result = authRepository.login(request)
 
             result.onSuccess { response ->
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        loginSuccessToken = response.token
-                    )
+                if (response.token != null) {
+                    // SUCCESS: We have a token
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            loginSuccessToken = response.token
+                        )
+                    }
+                } else {
+                    // BUSINESS ERROR: Server returned an error message
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = response.error ?: "An unknown server error occurred"
+                        )
+                    }
                 }
             }.onFailure { error ->
+                // NETWORK/PARSING ERROR
                 _uiState.update {
                     it.copy(
                         isLoading = false,

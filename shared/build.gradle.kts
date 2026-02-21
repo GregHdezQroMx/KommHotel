@@ -43,8 +43,8 @@ kotlin {
 
             // Ktor Client
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json) // <-- ADDED
+            implementation(libs.ktor.client.contentNegotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
@@ -73,8 +73,10 @@ kotlin {
             implementation(libs.ktor.client.java)
         }
         jsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
         wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -86,9 +88,24 @@ kotlin {
 android {
     namespace = "com.kommhotel.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+    
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+        debug {
+            isMinifyEnabled = false
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true // <-- RESTORED
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

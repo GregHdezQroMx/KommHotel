@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- This is a DEBUG ONLY configuration -->
+    <!-- It allows cleartext (HTTP) traffic to our specific local development servers -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- For standard Android emulators -->
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <!-- For physical devices and some emulators -->
+        <domain includeSubdomains="true">192.168.1.73</domain>
+    </domain-config>
+</network-security-config>

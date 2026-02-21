@@ -3,19 +3,18 @@ package com.kommhotel.server
 import com.kommhotel.server.routes.authRoutes
 import com.kommhotel.server.routes.roomRoutes
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.Application
-import io.ktor.server.application.call
-import io.ktor.server.application.install
+import io.ktor.server.application.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
+// Simplified for HTTP-only debug environment
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+        module()
+    }.start(wait = true)
 }
 
 fun Application.module() {
@@ -28,7 +27,6 @@ fun Application.module() {
             call.respondText("Server is healthy!")
         }
 
-        // Registra las rutas de autenticación y de habitaciones
         authRoutes()
         roomRoutes()
     }
