@@ -14,7 +14,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.kommhotel.app.features.auth.LoginScreen
-import com.kommhotel.app.features.auth.RegisterScreen // Import RegisterScreen
+import com.kommhotel.app.features.auth.RegisterScreen
+import com.kommhotel.app.features.home.HomeScreen
 import com.kommhotel.app.features.splash.SplashScreen
 import com.kommhotel.app.navigation.Screen
 import com.kommhotel.shared.di.initKoin
@@ -27,8 +28,8 @@ import kotlinx.serialization.modules.subclass
 private sealed class AppState {
     data object Loading : AppState()
     data object LoggedOut : AppState()
-    data object Registering : AppState() // New state for registration
-    data class LoggedIn(val sessionId: String) : AppState() // Will hold session data
+    data object Registering : AppState()
+    data class LoggedIn(val sessionId: String) : AppState()
 }
 
 @Composable
@@ -40,8 +41,7 @@ fun App() {
         LaunchedEffect(Unit) {
             initKoin()
             delay(2000) // Show splash for 2 seconds
-            // In a real app, we would check for a saved token here.
-            appState = AppState.LoggedOut // For now, we always go to the login screen
+            appState = AppState.LoggedOut
         }
 
         when (val state = appState) {
@@ -54,48 +54,27 @@ fun App() {
                         appState = AppState.LoggedIn(sessionId)
                     },
                     onRegisterClick = {
-                        appState = AppState.Registering // Change state to Registering
+                        appState = AppState.Registering
                     }
                 )
             }
             is AppState.Registering -> {
                 RegisterScreen(
-                    onRegisterSuccess = { 
-                        // On success, go back to the login screen
-                        appState = AppState.LoggedOut 
+                    onRegisterSuccess = {
+                        appState = AppState.LoggedOut
                     }
                 )
             }
             is AppState.LoggedIn -> {
-                // This is where the main, authenticated part of the app lives.
-                MainAuthenticatedNav(state.sessionId)
+                MainAuthenticatedContent(state.sessionId)
             }
         }
     }
 }
 
 @Composable
-private fun MainAuthenticatedNav(sessionId: String) {
-    val savedStateConfiguration = SavedStateConfiguration {
-        serializersModule = SerializersModule {
-            polymorphic(NavKey::class) {
-                subclass(Screen.Home::class)
-                // Add other main app screens here
-            }
-        }
-    }
-    val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Home)
-
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = { key ->
-            when (key) {
-                is Screen.Home -> NavEntry(key) {
-                    Text("Welcome Home! Session: $sessionId")
-                }
-                else -> NavEntry(key) { Text("Unknown Screen") }
-            }
-        }
-    )
+private fun MainAuthenticatedContent(sessionId: String) {
+    // For now, we directly show the HomeScreen.
+    // In the future, this will host the main navigation graph (Bottom Nav, etc.)
+    HomeScreen()
 }

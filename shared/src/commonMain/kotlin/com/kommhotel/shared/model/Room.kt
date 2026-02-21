@@ -1,5 +1,7 @@
 package com.kommhotel.shared.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a hotel room with a flexible pricing model.
  *
@@ -12,6 +14,7 @@ package com.kommhotel.shared.model
  * @property pricing The pricing model that applies to this room (per-night or per-hour).
  * @property isAvailable Current availability status.
  */
+@Serializable
 data class Room(
     val id: String,
     val name: String,
