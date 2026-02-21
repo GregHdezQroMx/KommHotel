@@ -2,6 +2,8 @@ package com.kommhotel.shared.di
 
 import com.kommhotel.shared.data.repository.AuthRepository
 import com.kommhotel.shared.data.repository.AuthRepositoryImpl
+import com.kommhotel.shared.data.repository.BookingRepository
+import com.kommhotel.shared.data.repository.BookingRepositoryImpl
 import com.kommhotel.shared.data.repository.RoomRepository
 import com.kommhotel.shared.data.repository.RoomRepositoryImpl
 import com.kommhotel.shared.presentation.home.HomeViewModel
@@ -43,6 +45,7 @@ val networkModule = module {
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<RoomRepository> { RoomRepositoryImpl(get()) }
+    single<BookingRepository> { BookingRepositoryImpl(get()) } // Added BookingRepository
 }
 
 val viewModelModule = module {

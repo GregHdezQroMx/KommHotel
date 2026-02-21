@@ -10,6 +10,7 @@
 
     <string name="button_login">Iniciar Sesión</string>
     <string name="button_register">Registrarse</string>
+    <string name="button_book_now">Reservar Ahora</string>
 
     <string name="auth_error_user_exists">El usuario con este correo electrónico ya existe.</string>
     <string name="auth_error_user_not_found">Usuario no encontrado.</string>

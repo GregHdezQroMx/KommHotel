@@ -1,6 +1,7 @@
 package com.kommhotel.server
 
 import com.kommhotel.server.routes.authRoutes
+import com.kommhotel.server.routes.bookingRoutes
 import com.kommhotel.server.routes.roomRoutes
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
@@ -29,5 +30,6 @@ fun Application.module() {
 
         authRoutes()
         roomRoutes()
+        bookingRoutes() // <-- ACTIVATED
     }
 }
