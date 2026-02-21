@@ -1,5 +1,6 @@
 package com.kommhotel.app.features.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,7 @@ import com.kommhotel.shared.presentation.home.HomeViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onRoomClick: (String) -> Unit) { // Added navigation callback
     val viewModel: HomeViewModel = koinInject()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -45,7 +46,7 @@ fun HomeScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(uiState.rooms) { room ->
-                    RoomItem(room)
+                    RoomItem(room, onClick = { onRoomClick(room.id) }) // Pass room id on click
                 }
             }
         }
@@ -53,13 +54,16 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun RoomItem(room: Room) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun RoomItem(room: Room, onClick: () -> Unit) { // Added click callback
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick) // Made the card clickable
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = room.name, fontWeight = FontWeight.Bold)
             Text(text = "Capacity: ${room.capacity}")
-            
-            // Correctly handle the sealed class for pricing
+
             val priceText = when (val pricing = room.pricing) {
                 is RoomPricing.PerNight -> "$${pricing.pricePerNight} per night"
                 is RoomPricing.PerHour -> "$${pricing.basePrice} for ${pricing.includedHours} hours"

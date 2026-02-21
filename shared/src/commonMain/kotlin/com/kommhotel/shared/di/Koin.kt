@@ -7,6 +7,7 @@ import com.kommhotel.shared.data.repository.RoomRepositoryImpl
 import com.kommhotel.shared.presentation.home.HomeViewModel
 import com.kommhotel.shared.presentation.login.LoginViewModel
 import com.kommhotel.shared.presentation.register.RegisterViewModel
+import com.kommhotel.shared.presentation.room_detail.RoomDetailViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
@@ -48,4 +49,5 @@ val viewModelModule = module {
     factoryOf(::LoginViewModel)
     factoryOf(::RegisterViewModel)
     factoryOf(::HomeViewModel)
+    factory { (roomId: String) -> RoomDetailViewModel(roomId) } // Definition for ViewModel with parameters
 }

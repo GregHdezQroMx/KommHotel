@@ -4,17 +4,13 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 /**
- * A type-safe representation of the navigation destinations in the app.
- * Each object implements NavKey and is serializable.
+ * A sealed class representing the screens in the main (authenticated) part of the app.
+ * We use NavKey from navigation-3 for type-safe navigation.
  */
-@Serializable
 sealed class Screen : NavKey {
     @Serializable
-    data object Splash : Screen()
-
-    @Serializable
-    data object Login : Screen()
-
-    @Serializable
     data object Home : Screen()
+
+    @Serializable
+    data class RoomDetail(val roomId: String) : Screen()
 }
