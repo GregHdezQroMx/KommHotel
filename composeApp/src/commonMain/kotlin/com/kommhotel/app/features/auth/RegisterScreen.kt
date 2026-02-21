@@ -1,11 +1,6 @@
 package com.kommhotel.app.features.auth
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -19,22 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.kommhotel.shared.presentation.login.LoginViewModel
+import com.kommhotel.shared.presentation.register.RegisterViewModel
+import kommhotel.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import kommhotel.shared.generated.resources.*
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: (sessionId: String) -> Unit,
-    onRegisterClick: () -> Unit // New parameter
-) {
-    val viewModel: LoginViewModel = koinInject()
+fun RegisterScreen(onRegisterSuccess: () -> Unit) {
+    val viewModel: RegisterViewModel = koinInject()
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.loginSuccessToken) {
-        uiState.loginSuccessToken?.let {
-            onLoginSuccess(it)
+    LaunchedEffect(uiState.registrationSuccess) {
+        if (uiState.registrationSuccess) {
+            onRegisterSuccess()
         }
     }
 
@@ -43,9 +35,27 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(stringResource(Res.string.label_welcome))
+        Text(stringResource(Res.string.label_register_title))
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = uiState.firstName,
+            onValueChange = { viewModel.onFirstNameChange(it) },
+            label = { Text(stringResource(Res.string.label_first_name)) },
+            isError = uiState.errorMessage != null
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = uiState.lastName,
+            onValueChange = { viewModel.onLastNameChange(it) },
+            label = { Text(stringResource(Res.string.label_last_name)) },
+            isError = uiState.errorMessage != null
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = uiState.email,
@@ -74,13 +84,7 @@ fun LoginScreen(
         if (uiState.isLoading) {
             CircularProgressIndicator()
         } else {
-            Button(onClick = { viewModel.login() }) {
-                Text(stringResource(Res.string.button_login))
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(onClick = onRegisterClick) { // <-- CONNECTED
+            Button(onClick = { viewModel.register() }) {
                 Text(stringResource(Res.string.button_register))
             }
         }

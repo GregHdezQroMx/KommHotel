@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.kommhotel.app.features.auth.LoginScreen
+import com.kommhotel.app.features.auth.RegisterScreen // Import RegisterScreen
 import com.kommhotel.app.features.splash.SplashScreen
 import com.kommhotel.app.navigation.Screen
 import com.kommhotel.shared.di.initKoin
@@ -26,6 +27,7 @@ import kotlinx.serialization.modules.subclass
 private sealed class AppState {
     data object Loading : AppState()
     data object LoggedOut : AppState()
+    data object Registering : AppState() // New state for registration
     data class LoggedIn(val sessionId: String) : AppState() // Will hold session data
 }
 
@@ -50,6 +52,17 @@ fun App() {
                 LoginScreen(
                     onLoginSuccess = { sessionId ->
                         appState = AppState.LoggedIn(sessionId)
+                    },
+                    onRegisterClick = {
+                        appState = AppState.Registering // Change state to Registering
+                    }
+                )
+            }
+            is AppState.Registering -> {
+                RegisterScreen(
+                    onRegisterSuccess = { 
+                        // On success, go back to the login screen
+                        appState = AppState.LoggedOut 
                     }
                 )
             }

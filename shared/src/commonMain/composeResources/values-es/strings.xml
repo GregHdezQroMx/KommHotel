@@ -4,10 +4,16 @@
     <string name="label_welcome">¡Bienvenido!</string>
     <string name="label_email">Correo Electrónico</string>
     <string name="label_password">Contraseña</string>
+    <string name="label_first_name">Nombre</string>
+    <string name="label_last_name">Apellido</string>
+    <string name="label_register_title">Crear una Cuenta</string>
+
     <string name="button_login">Iniciar Sesión</string>
     <string name="button_register">Registrarse</string>
+
     <string name="auth_error_user_exists">El usuario con este correo electrónico ya existe.</string>
     <string name="auth_error_user_not_found">Usuario no encontrado.</string>
     <string name="auth_error_invalid_credentials">Credenciales inválidas.</string>
+
     <string name="api_key_token">token</string>
 </resources>

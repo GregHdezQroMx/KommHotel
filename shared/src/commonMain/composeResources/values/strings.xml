@@ -3,10 +3,14 @@
     <!-- App Name -->
     <string name="app_name">KommHotel</string>
 
-    <!-- UI Labels &amp; Buttons -->
+    <!-- UI Labels & Buttons -->
     <string name="label_welcome">Welcome!</string>
     <string name="label_email">Email</string>
     <string name="label_password">Password</string>
+    <string name="label_first_name">First Name</string>
+    <string name="label_last_name">Last Name</string>
+    <string name="label_register_title">Create an Account</string>
+
     <string name="button_login">Login</string>
     <string name="button_register">Register</string>
 

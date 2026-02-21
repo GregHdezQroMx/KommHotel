@@ -3,11 +3,12 @@ package com.kommhotel.shared.di
 import com.kommhotel.shared.data.repository.AuthRepository
 import com.kommhotel.shared.data.repository.AuthRepositoryImpl
 import com.kommhotel.shared.presentation.login.LoginViewModel
+import com.kommhotel.shared.presentation.register.RegisterViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.context.startKoin
+import org.koin.core.context.startKoin // <-- ADDED IMPORT
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -41,4 +42,5 @@ val repositoryModule = module {
 
 val viewModelModule = module {
     factoryOf(::LoginViewModel)
+    factoryOf(::RegisterViewModel)
 }
