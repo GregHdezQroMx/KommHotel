@@ -1,6 +1,14 @@
 package com.kommhotel.app
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -15,6 +24,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.kommhotel.app.features.auth.LoginScreen
 import com.kommhotel.app.features.auth.RegisterScreen
+import com.kommhotel.app.features.bookings.MyBookingsScreen
 import com.kommhotel.app.features.home.HomeScreen
 import com.kommhotel.app.features.room_detail.RoomDetailScreen
 import com.kommhotel.app.features.splash.SplashScreen
@@ -64,26 +74,57 @@ private fun MainAuthenticatedNav(sessionId: String) {
             polymorphic(NavKey::class) {
                 subclass(Screen.Home::class)
                 subclass(Screen.RoomDetail::class)
+                subclass(Screen.MyBookings::class)
             }
         }
     }
     val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Home)
+    val currentScreen = backStack.lastOrNull()
 
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = { key ->
-            when (key) {
-                is Screen.Home -> NavEntry(key) {
-                    HomeScreen(onRoomClick = { roomId ->
-                        backStack.add(Screen.RoomDetail(roomId))
-                    })
-                }
-                is Screen.RoomDetail -> NavEntry(key) {
-                    RoomDetailScreen(key.roomId)
-                }
-                else -> NavEntry(key) { Text("Unknown Screen") }
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") }, // Correct M3 Icon
+                    label = { Text("Home") },
+                    selected = currentScreen is Screen.Home || currentScreen is Screen.RoomDetail,
+                    onClick = {
+                        backStack.clear()
+                        backStack.add(Screen.Home)
+                    }
+                )
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.List, contentDescription = "My Bookings") }, // Correct M3 Icon
+                    label = { Text("My Bookings") },
+                    selected = currentScreen is Screen.MyBookings,
+                    onClick = {
+                        backStack.clear()
+                        backStack.add(Screen.MyBookings)
+                    }
+                )
             }
         }
-    )
+    ) { innerPadding ->
+        NavDisplay(
+            modifier = Modifier.padding(innerPadding),
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryProvider = { key ->
+                when (key) {
+                    is Screen.Home -> NavEntry(key) {
+                        HomeScreen(onRoomClick = { roomId ->
+                            backStack.add(Screen.RoomDetail(roomId))
+                        })
+                    }
+                    is Screen.RoomDetail -> NavEntry(key) {
+                        RoomDetailScreen(key.roomId)
+                    }
+                    is Screen.MyBookings -> NavEntry(key) {
+                        MyBookingsScreen()
+                    }
+                    else -> NavEntry(key) { Text("Unknown Screen") }
+                }
+            }
+        )
+    }
 }
