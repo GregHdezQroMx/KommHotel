@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.kommhotel.app.di.initializeKoin
 import com.kommhotel.app.features.auth.LoginScreen
 import com.kommhotel.app.features.auth.RegisterScreen
 import com.kommhotel.app.features.bookings.MyBookingsScreen
@@ -29,7 +30,6 @@ import com.kommhotel.app.features.home.HomeScreen
 import com.kommhotel.app.features.room_detail.RoomDetailScreen
 import com.kommhotel.app.features.splash.SplashScreen
 import com.kommhotel.app.navigation.Screen
-import com.kommhotel.shared.di.initKoin
 import kotlinx.coroutines.delay
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -48,7 +48,7 @@ fun App() {
         var appState by remember { mutableStateOf<AppState>(AppState.Loading) }
 
         LaunchedEffect(Unit) {
-            initKoin()
+            initializeKoin()
             delay(2000)
             appState = AppState.LoggedOut
         }

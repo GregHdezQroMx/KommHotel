@@ -17,6 +17,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
+import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 /**
@@ -25,13 +26,15 @@ import org.koin.dsl.module
  */
 expect val platformModule: Module
 
-fun initKoin() {
+// Corrected initKoin to accept a platform-specific configuration block
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
+        appDeclaration()
         modules(
             networkModule,
             repositoryModule,
             viewModelModule,
-            platformModule // <-- ADDED platform-specific module
+            platformModule
         )
     }
 }

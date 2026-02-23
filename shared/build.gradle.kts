@@ -10,7 +10,7 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    androidTarget { 
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -77,11 +77,28 @@ kotlin {
 android {
     namespace = "com.kommhotel.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+    
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+        debug {
+            isMinifyEnabled = false
+        }
+    }
+
     buildFeatures {
         buildConfig = true
+    }
+
+    // This explicitly sets the Java target to 17, aligning it with Kotlin's target.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
