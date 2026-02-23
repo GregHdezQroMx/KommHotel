@@ -15,15 +15,23 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+
+/**
+ * This is the "contract" for platform-specific dependencies.
+ * Each platform will provide its own 'actual' implementation of this module.
+ */
+expect val platformModule: Module
 
 fun initKoin() {
     startKoin {
         modules(
             networkModule,
             repositoryModule,
-            viewModelModule
+            viewModelModule,
+            platformModule // <-- ADDED platform-specific module
         )
     }
 }
@@ -45,12 +53,12 @@ val networkModule = module {
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<RoomRepository> { RoomRepositoryImpl(get()) }
-    single<BookingRepository> { BookingRepositoryImpl(get()) } // Added BookingRepository
+    single<BookingRepository> { BookingRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {
     factoryOf(::LoginViewModel)
     factoryOf(::RegisterViewModel)
     factoryOf(::HomeViewModel)
-    factory { (roomId: String) -> RoomDetailViewModel(roomId) } // Definition for ViewModel with parameters
+    factory { (roomId: String) -> RoomDetailViewModel(roomId) }
 }

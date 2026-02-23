@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        /* Esto obliga al navegador a usar todo el espacio disponible */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Evita scrolls dobles innecesarios */
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <title>Mi App Compose</title>
+</head>
+<body>
+<!-- El ID debe coincidir con lo que busques en tu main.kt si no usas ComposeViewport(document.body) -->
+<div id="app"></div>
+<script src="composeApp.js"></script>
+</body>
+</html>

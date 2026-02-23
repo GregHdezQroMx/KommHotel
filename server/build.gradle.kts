@@ -9,12 +9,13 @@ dependencies {
     // Ktor Server Dependencies
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.contentNegotiation) // <-- CORRECTED
+    implementation(libs.ktor.server.contentNegotiation)
+    implementation(libs.ktor.server.cors) // <-- CORRECTED
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.logback)
 
     // Test Dependencies
-    testImplementation(libs.ktor.server.testHost) // <-- CORRECTED
+    testImplementation(libs.ktor.server.testHost)
     testImplementation(libs.kotlin.testJunit)
 }
 

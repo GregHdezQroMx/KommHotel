@@ -10,7 +10,7 @@ plugins {
 }
 
 kotlin {
-    androidTarget { 
+    androidTarget {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -22,11 +22,6 @@ kotlin {
     jvm()
     
     js {
-        browser()
-    }
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
         browser()
     }
     
@@ -49,15 +44,14 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.koin.android)
             implementation(libs.okio)
             implementation(libs.ktor.client.android)
         }
         val iosMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                implementation(libs.androidx.datastore)
                 implementation(libs.androidx.datastore.preferences)
                 implementation(libs.okio)
                 implementation(libs.ktor.client.darwin)
@@ -67,15 +61,11 @@ kotlin {
         iosSimulatorArm64Main.get().dependsOn(iosMain)
 
         jvmMain.dependencies {
-            implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.okio)
             implementation(libs.ktor.client.java)
         }
         jsMain.dependencies {
-            implementation(libs.ktor.client.js)
-        }
-        wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
         }
         commonTest.dependencies {
@@ -84,31 +74,14 @@ kotlin {
     }
 }
 
-// This block is for the androidLibrary plugin
 android {
     namespace = "com.kommhotel.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
-    
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-        debug {
-            isMinifyEnabled = false
-        }
-    }
-
     buildFeatures {
-        buildConfig = true // <-- RESTORED
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        buildConfig = true
     }
 }
 

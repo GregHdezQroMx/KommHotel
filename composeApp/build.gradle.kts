@@ -35,14 +35,13 @@ kotlin {
         }
     }
     
-    js {
-        browser()
-        binaries.executable()
-    }
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                // Este nombre debe coincidir con el del index.html
+                outputFileName = "composeApp.js"
+            }
+        }
         binaries.executable()
     }
     
@@ -77,6 +76,11 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+
+        jsMain.dependencies {
+            implementation(compose.html.core) // O compose.web.core
+            implementation(compose.runtime)
         }
     }
 }
