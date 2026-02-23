@@ -10,7 +10,9 @@ dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.contentNegotiation)
-    implementation(libs.ktor.server.cors) // <-- CORRECTED
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.auth) // <-- ADDED FOR JWT
+    implementation(libs.ktor.server.auth.jwt) // <-- ADDED FOR JWT
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.logback)
 

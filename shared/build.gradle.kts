@@ -39,6 +39,7 @@ kotlin {
             // Ktor Client
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.contentNegotiation)
+            implementation(libs.ktor.client.auth) // <-- ADDED
             implementation(libs.ktor.serialization.kotlinx.json)
         }
         androidMain.dependencies {

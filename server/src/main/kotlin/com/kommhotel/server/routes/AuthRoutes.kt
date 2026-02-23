@@ -1,5 +1,8 @@
 package com.kommhotel.server.routes
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.kommhotel.shared.data.repository.AuthResponse // <-- IMPORT THE CORRECT RESPONSE DTO
 import com.kommhotel.shared.model.Guest
 import com.kommhotel.shared.model.GuestPreferences
 import io.ktor.http.HttpStatusCode
@@ -9,6 +12,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
+import java.util.Date
 
 // --- Request Models ---
 @Serializable
@@ -21,53 +25,60 @@ data class LoginRequest(val email: String, val password: String)
 private val userStorage = mutableMapOf<String, Pair<Guest, String>>() // Email -> (Guest, Password)
 
 fun Route.authRoutes() {
-    /**
-     * Handles user registration.
-     */
+    val secret = "my-super-secret-for-jwt"
+    val issuer = "http://0.0.0.0:8080"
+    val audience = "users"
+
     post("/auth/register") {
         val request = call.receive<RegisterRequest>()
 
         if (userStorage.containsKey(request.email)) {
-            // Business error, but the request was processed successfully.
-            call.respond(HttpStatusCode.OK, mapOf("error" to "User with this email already exists."))
+            call.respond(HttpStatusCode.OK, AuthResponse(error = "User with this email already exists."))
             return@post
         }
 
         val newGuest = Guest(
-            id = "user_${userStorage.size + 1}", // Simple ID generation
+            id = "user_${userStorage.size + 1}",
             firstName = request.firstName,
             lastName = request.lastName,
             email = request.email,
-            phoneNumber = "", // To be added later
+            phoneNumber = "",
             preferences = GuestPreferences()
         )
 
         userStorage[request.email] = newGuest to request.password
 
-        val token = "fake-jwt-for-${newGuest.id}"
-        call.respond(HttpStatusCode.OK, mapOf("token" to token))
+        val token = JWT.create()
+            .withAudience(audience)
+            .withIssuer(issuer)
+            .withClaim("email", newGuest.email)
+            .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)) // 1 day
+            .sign(Algorithm.HMAC256(secret))
+
+        call.respond(HttpStatusCode.OK, AuthResponse(token = token))
     }
 
-    /**
-     * Handles user login.
-     */
     post("/auth/login") {
         val request = call.receive<LoginRequest>()
 
         val userRecord = userStorage[request.email]
         if (userRecord == null) {
-            // Business error, but the request was processed successfully.
-            call.respond(HttpStatusCode.OK, mapOf("error" to "User not found."))
+            call.respond(HttpStatusCode.OK, AuthResponse(error = "User not found."))
             return@post
         }
 
         val (guest, storedPassword) = userRecord
         if (storedPassword == request.password) {
-            val token = "fake-jwt-for-${guest.id}"
-            call.respond(HttpStatusCode.OK, mapOf("token" to token))
+            val token = JWT.create()
+                .withAudience(audience)
+                .withIssuer(issuer)
+                .withClaim("email", guest.email)
+                .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)) // 1 day
+                .sign(Algorithm.HMAC256(secret))
+
+            call.respond(HttpStatusCode.OK, AuthResponse(token = token))
         } else {
-            // Business error, but the request was processed successfully.
-            call.respond(HttpStatusCode.OK, mapOf("error" to "Invalid credentials."))
+            call.respond(HttpStatusCode.OK, AuthResponse(error = "Invalid credentials."))
         }
     }
 }

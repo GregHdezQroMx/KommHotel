@@ -4,6 +4,7 @@ import com.kommhotel.shared.model.Booking
 import com.kommhotel.shared.util.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -22,6 +23,7 @@ data class CreateBookingRequest(
 
 interface BookingRepository {
     suspend fun createBooking(request: CreateBookingRequest): Result<Booking>
+    suspend fun getMyBookings(): Result<List<Booking>> // <-- ADDED
 }
 
 class BookingRepositoryImpl(private val httpClient: HttpClient) : BookingRepository {
@@ -32,6 +34,17 @@ class BookingRepositoryImpl(private val httpClient: HttpClient) : BookingReposit
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
+            Result.success(response.body())
+        } catch (e: Exception) {
+            println("BookingRepository Error: $e")
+            Result.failure(e)
+        }
+    }
+
+    // Implementation for the new function
+    override suspend fun getMyBookings(): Result<List<Booking>> {
+        return try {
+            val response = httpClient.get("${getBaseUrl()}/me/bookings")
             Result.success(response.body())
         } catch (e: Exception) {
             println("BookingRepository Error: $e")
