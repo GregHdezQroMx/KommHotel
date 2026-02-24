@@ -90,18 +90,23 @@ The server must be running for any of the client apps to function.
 *To add the screenshots, create a `/screenshots` folder in the root of the project and place the image files inside.*
 
 **Login Screen (iOS)**
+
 <img src="./screenshots/Login%20iOs.png" width="300">
 
 **Home Screen (Android)**
+
 <img src="./screenshots/Room%20List%20Android.png" width="300">
 
 **Room Detail (Web)**
+
 <img src="./screenshots/Room%20details%20Web.png" width="500">
 
 **My Bookings Screen (Web)**
+
 <img src="./screenshots/My%20Bookings%20Web.png" width="500">
 
 **Signup Screen (Desktop)**
+
 <img src="./screenshots/Signup%20Desktop.png" width="500">
 
 ---
