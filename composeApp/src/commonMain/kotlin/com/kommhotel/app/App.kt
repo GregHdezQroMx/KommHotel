@@ -2,14 +2,18 @@ package com.kommhotel.app
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,6 +71,7 @@ fun App() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainAuthenticatedNav(sessionId: String) {
     val savedStateConfiguration = SavedStateConfiguration {
@@ -82,10 +87,31 @@ private fun MainAuthenticatedNav(sessionId: String) {
     val currentScreen = backStack.lastOrNull()
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    val title = when (currentScreen) {
+                        is Screen.Home -> "Home"
+                        is Screen.RoomDetail -> "Room Details"
+                        is Screen.MyBookings -> "My Bookings"
+                        else -> "KommHotel"
+                    }
+                    Text(title)
+                },
+                navigationIcon = {
+                    // Show back button only if there is a screen to go back to
+                    if (backStack.size > 1) {
+                        IconButton(onClick = { backStack.removeLastOrNull() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    }
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") }, // Correct M3 Icon
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
                     label = { Text("Home") },
                     selected = currentScreen is Screen.Home || currentScreen is Screen.RoomDetail,
                     onClick = {
@@ -94,7 +120,7 @@ private fun MainAuthenticatedNav(sessionId: String) {
                     }
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.List, contentDescription = "My Bookings") }, // Correct M3 Icon
+                    icon = { Icon(Icons.Filled.List, contentDescription = "My Bookings") },
                     label = { Text("My Bookings") },
                     selected = currentScreen is Screen.MyBookings,
                     onClick = {
