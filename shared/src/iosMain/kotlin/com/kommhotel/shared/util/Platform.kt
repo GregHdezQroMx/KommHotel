@@ -1,6 +1,8 @@
 package com.kommhotel.shared.util
 
 /**
- * Returns the base URL for the server when running on an iOS device or simulator.
+ * iOS-specific implementation to get the base URL.
+ * It uses the standard loopback IP address, which works for simulators and devices
+ * on the same Wi-Fi network as the server.
  */
-actual fun getBaseUrl(): String = "http://192.168.1.73:8080"
+actual fun getBaseUrl(): String = "http://127.0.0.1:8080"
