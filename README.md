@@ -90,16 +90,44 @@ The server must be running for any of the client apps to function.
 *To add the screenshots, create a `/screenshots` folder in the root of the project and place the image files inside.*
 
 **Login Screen (iOS)**
-![Login Screen](./screenshots/Login%20iOs.png)
+<img src="./screenshots/Login%20iOs.png" width="300">
 
 **Home Screen (Android)**
-![Home Screen](./screenshots/Room%20List%20Android.png)
+<img src="./screenshots/Room%20List%20Android.png" width="300">
 
 **Room Detail (Web)**
-![Room Detail](./screenshots/Room%20details%20Web.png)
+<img src="./screenshots/Room%20details%20Web.png" width="500">
 
 **My Bookings Screen (Web)**
-![My Bookings Screen](./screenshots/My%20Bookings%20Web.png)
+<img src="./screenshots/My%20Bookings%20Web.png" width="500">
 
 **Signup Screen (Desktop)**
-![Signup Screen](./screenshots/Signup%20Desktop.png)
+<img src="./screenshots/Signup%20Desktop.png" width="500">
+
+---
+
+## Next Steps
+
+This project serves as a strong foundation. Here are some potential improvements and next steps:
+
+1.  **Refine Server-Side Logic:** 
+    - The `GET /me/bookings` endpoint currently returns all bookings. Refactor it to filter bookings based on the `userId` or `email` from the JWT principal.
+    - Similarly, update the `POST /bookings` endpoint to associate the new booking with the authenticated user.
+
+2.  **Implement Logout Feature:**
+    - Add a "Logout" button to the UI (e.g., in the `MyBookingsScreen`).
+    - On click, call `sessionManager.clearToken()`.
+    - Navigate the user back to the `LoginScreen`.
+
+3.  **Database Integration:**
+    - Replace the in-memory `userStorage` and `bookings` lists in the server with a persistent database solution like H2 (for development) or a more robust option like PostgreSQL.
+    - Consider a multiplatform database for the client-side, like SQLDelight, for caching or offline capabilities.
+
+4.  **Enhance UI/UX:**
+    - Add animations and transitions between screens.
+    - Improve error handling with more user-friendly dialogs or snackbars instead of just text.
+    - Implement a more polished design system.
+
+5.  **Add Testing:**
+    - Write unit tests for ViewModels and Repositories in the `shared` module.
+    - Add UI tests for key user flows.
