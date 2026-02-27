@@ -40,9 +40,8 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     }
 }
 
-// HttpClient now requires SessionManager to be injected
 val networkModule = module {
-    single {
+    factory {
         val sessionManager: SessionManager = get()
         HttpClient {
             install(ContentNegotiation) {
@@ -52,21 +51,13 @@ val networkModule = module {
                     ignoreUnknownKeys = true
                 })
             }
-            // Install the Auth plugin
+
             install(Auth) {
                 bearer {
                     loadTokens {
-                        val token = sessionManager.getToken().first()
-                        if (token != null) {
-                            BearerTokens(accessToken = token, refreshToken = "")
-                        } else {
-                            null
+                        sessionManager.getToken().first()?.let { token ->
+                            BearerTokens(token, "")
                         }
-                    }
-                    // ADDED: Force sending the token on the first request
-                    sendWithoutRequest { request ->
-                        // You can add logic here to only send the token to specific domains
-                        true // Send for all requests
                     }
                 }
             }
@@ -75,9 +66,9 @@ val networkModule = module {
 }
 
 val repositoryModule = module {
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<RoomRepository> { RoomRepositoryImpl(get()) }
-    single<BookingRepository> { BookingRepositoryImpl(get()) }
+    factory<AuthRepository> { AuthRepositoryImpl(get()) }
+    factory<RoomRepository> { RoomRepositoryImpl(get()) }
+    factory<BookingRepository> { BookingRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {

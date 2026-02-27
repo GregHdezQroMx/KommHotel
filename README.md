@@ -115,29 +115,20 @@ The server must be running for any of the client apps to function.
 
 This project serves as a strong foundation. Here are some potential improvements and next steps:
 
-1.  **Production-like Network Testing:**
+1.  **Database Integration:**
+    - Replace the in-memory `userStorage` and `bookings` lists in the server with a persistent database solution like H2 (for development) or a more robust option like PostgreSQL.
+    - Consider a multiplatform database for the client-side, like SQLDelight, for caching or offline capabilities.
+
+2.  **Production-like Network Testing:**
     - To enable testing from physical Android/iOS devices, deploy the server to a dedicated machine on the local network (e.g., a Linux server).
     - Build a distributable JAR for the server using `./gradlew :server:installDist`.
     - Run the server on the Linux machine and update the `getBaseUrl()` function in the client apps to point to the server's network IP address.
 
-2.  **Refine Server-Side Logic:** 
-    - The `GET /me/bookings` endpoint currently returns all bookings. Refactor it to filter bookings based on the `userId` or `email` from the JWT principal.
-    - Similarly, update the `POST /bookings` endpoint to associate the new booking with the authenticated user.
-
-3.  **Implement Logout Feature:**
-    - Add a "Logout" button to the UI (e.g., in the `MyBookingsScreen`).
-    - On click, call `sessionManager.clearToken()`.
-    - Navigate the user back to the `LoginScreen`.
-
-4.  **Database Integration:**
-    - Replace the in-memory `userStorage` and `bookings` lists in the server with a persistent database solution like H2 (for development) or a more robust option like PostgreSQL.
-    - Consider a multiplatform database for the client-side, like SQLDelight, for caching or offline capabilities.
-
-5.  **Enhance UI/UX:**
+3.  **Enhance UI/UX:**
     - Add animations and transitions between screens.
     - Improve error handling with more user-friendly dialogs or snackbars instead of just text.
     - Implement a more polished design system.
 
-6.  **Add Testing:**
+4.  **Add Testing:**
     - Write unit tests for ViewModels and Repositories in the `shared` module.
     - Add UI tests for key user flows.

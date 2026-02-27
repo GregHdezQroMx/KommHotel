@@ -16,6 +16,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.Json
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
@@ -24,13 +25,13 @@ fun main() {
 }
 
 fun Application.module() {
-    // Hardcoded values for the JWT token
-    val secret = "my-super-secret-for-jwt"
-    val issuer = "http://0.0.0.0:8080"
-    val audience = "users"
-
+    // Configure Content Negotiation to be more robust, matching the client's setup
     install(ContentNegotiation) {
-        json()
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
     }
 
     install(CORS) {
@@ -39,18 +40,17 @@ fun Application.module() {
         allowMethod(HttpMethod.Get)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.ContentType)
-        allowHeader(HttpHeaders.Authorization) // <-- Allow Authorization header
+        allowHeader(HttpHeaders.Authorization)
         anyHost()
     }
 
-    // Install and configure JWT authentication
     install(Authentication) {
         jwt("auth-jwt") {
-            realm = "KommHotel"
+            realm = JwtConfig.realm
             verifier(JWT
-                .require(Algorithm.HMAC256(secret))
-                .withAudience(audience)
-                .withIssuer(issuer)
+                .require(Algorithm.HMAC256(JwtConfig.secret))
+                .withAudience(JwtConfig.audience)
+                .withIssuer(JwtConfig.issuer)
                 .build()
             )
             validate { credential ->

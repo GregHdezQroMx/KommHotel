@@ -11,7 +11,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://jitpack.io") // <-- JitPack repository
+        maven("https://jitpack.io")
     }
 }
 
@@ -20,4 +20,4 @@ rootProject.name = "KommHotel"
 include(":composeApp")
 include(":server")
 include(":shared")
-include(":iosApp") // <-- Register the iosApp module
+include(":iosApp")

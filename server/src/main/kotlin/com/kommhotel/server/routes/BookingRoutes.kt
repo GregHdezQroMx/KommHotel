@@ -15,43 +15,62 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import java.util.UUID
 
-// A simple in-memory store for bookings
-private val bookings = mutableListOf<Booking>()
-
 fun Route.bookingRoutes() {
-    // This is a public route to create a booking
-    post("/bookings") {
-        val request = call.receive<CreateBookingRequest>()
-
-        val newBooking = Booking(
-            id = "booking_${UUID.randomUUID()}",
-            guestId = "user_1", // Hardcoded guest ID for now
-            roomId = request.roomId,
-            checkInDate = request.checkInDate,
-            checkOutDate = request.checkOutDate,
-            totalPrice = 2400.0, // Hardcoded price for now
-            status = BookingStatus.CONFIRMED
-        )
-
-        bookings.add(newBooking)
-
-        call.respond(HttpStatusCode.Created, newBooking)
-    }
-
-    // This is a protected route group
     authenticate("auth-jwt") {
+        post("/bookings") {
+            val principal = call.principal<JWTPrincipal>()
+            val userEmail = principal?.payload?.getClaim("email")?.asString()
+
+            if (userEmail == null) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+                return@post
+            }
+
+            val user = userStorage[userEmail]?.first
+            if (user == null) {
+                call.respond(HttpStatusCode.NotFound, "User not found in storage")
+                return@post
+            }
+
+            val request = call.receive<CreateBookingRequest>()
+
+            val newBooking = Booking(
+                id = "booking_${UUID.randomUUID()}",
+                guestId = user.id,
+                roomId = request.roomId,
+                checkInDate = request.checkInDate,
+                checkOutDate = request.checkOutDate,
+                totalPrice = 2400.0,
+                status = BookingStatus.CONFIRMED
+            )
+
+            bookings.add(newBooking)
+            call.respond(HttpStatusCode.Created, newBooking)
+        }
+
         get("/me/bookings") {
             val principal = call.principal<JWTPrincipal>()
             val userEmail = principal?.payload?.getClaim("email")?.asString()
+
+            // --- DEBUGGING LOGS ---
+            println("--- DEBUG: /me/bookings ---")
+            println("Token email: $userEmail")
+            println("Current userStorage keys: ${userStorage.keys}")
+            println("---------------------------")
 
             if (userEmail == null) {
                 call.respond(HttpStatusCode.Unauthorized, "Invalid token")
                 return@get
             }
 
-            // In a real app, you would query the database for bookings where guestId matches the user's ID.
-            // For now, we return all bookings as a placeholder.
-            call.respond(bookings)
+            val user = userStorage[userEmail]?.first
+            if (user == null) {
+                call.respond(HttpStatusCode.NotFound, "User not found in storage")
+                return@get
+            }
+
+            val userBookings = bookings.filter { it.guestId == user.id }
+            call.respond(userBookings)
         }
     }
 }

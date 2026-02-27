@@ -3,6 +3,7 @@ package com.kommhotel.app
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
@@ -34,10 +36,13 @@ import com.kommhotel.app.features.home.HomeScreen
 import com.kommhotel.app.features.room_detail.RoomDetailScreen
 import com.kommhotel.app.features.splash.SplashScreen
 import com.kommhotel.app.navigation.Screen
+import com.kommhotel.shared.data.local.SessionManager
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import org.koin.compose.koinInject
 
 private sealed class AppState {
     data object Loading : AppState()
@@ -66,14 +71,19 @@ fun App() {
             is AppState.Registering -> RegisterScreen(
                 onRegisterSuccess = { appState = AppState.LoggedOut }
             )
-            is AppState.LoggedIn -> MainAuthenticatedNav(state.sessionId)
+            is AppState.LoggedIn -> MainAuthenticatedNav(
+                onLogout = { appState = AppState.LoggedOut }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainAuthenticatedNav(sessionId: String) {
+private fun MainAuthenticatedNav(onLogout: () -> Unit) {
+    val sessionManager: SessionManager = koinInject()
+    val scope = rememberCoroutineScope()
+
     val savedStateConfiguration = SavedStateConfiguration {
         serializersModule = SerializersModule {
             polymorphic(NavKey::class) {
@@ -83,6 +93,7 @@ private fun MainAuthenticatedNav(sessionId: String) {
             }
         }
     }
+    
     val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Home)
     val currentScreen = backStack.lastOrNull()
 
@@ -99,11 +110,20 @@ private fun MainAuthenticatedNav(sessionId: String) {
                     Text(title)
                 },
                 navigationIcon = {
-                    // Show back button only if there is a screen to go back to
                     if (backStack.size > 1) {
                         IconButton(onClick = { backStack.removeLastOrNull() }) {
                             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            sessionManager.clearToken() // 1. Clear the old token!
+                            onLogout()                  // 2. Go to Login state!
+                        }
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
                     }
                 }
             )
