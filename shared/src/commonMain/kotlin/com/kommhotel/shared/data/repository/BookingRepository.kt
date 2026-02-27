@@ -4,10 +4,12 @@ import com.kommhotel.shared.model.Booking
 import com.kommhotel.shared.util.getBaseUrl
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
@@ -46,6 +48,12 @@ class BookingRepositoryImpl(private val httpClient: HttpClient) : BookingReposit
         return try {
             val response = httpClient.get("${getBaseUrl()}/me/bookings")
             Result.success(response.body())
+        } catch (e: ClientRequestException) {
+            if (e.response.status == HttpStatusCode.NotFound) {
+                Result.success(emptyList()) // Return empty list on 404
+            } else {
+                Result.failure(e) // Re-throw other client errors
+            }
         } catch (e: Exception) {
             println("BookingRepository Error: $e")
             Result.failure(e)

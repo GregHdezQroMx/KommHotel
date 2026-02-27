@@ -2,7 +2,8 @@ package com.kommhotel.server.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.kommhotel.shared.data.repository.AuthResponse // <-- IMPORT THE CORRECT RESPONSE DTO
+import com.kommhotel.server.JwtConfig
+import com.kommhotel.shared.data.repository.AuthResponse
 import com.kommhotel.shared.model.Guest
 import com.kommhotel.shared.model.GuestPreferences
 import io.ktor.http.HttpStatusCode
@@ -13,22 +14,15 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
 import java.util.Date
+import java.util.UUID
 
-// --- Request Models ---
 @Serializable
 data class RegisterRequest(val firstName: String, val lastName: String, val email: String, val password: String)
 
 @Serializable
 data class LoginRequest(val email: String, val password: String)
 
-// --- In-Memory Storage (for demonstration purposes) ---
-private val userStorage = mutableMapOf<String, Pair<Guest, String>>() // Email -> (Guest, Password)
-
 fun Route.authRoutes() {
-    val secret = "my-super-secret-for-jwt"
-    val issuer = "http://0.0.0.0:8080"
-    val audience = "users"
-
     post("/auth/register") {
         val request = call.receive<RegisterRequest>()
 
@@ -38,7 +32,7 @@ fun Route.authRoutes() {
         }
 
         val newGuest = Guest(
-            id = "user_${userStorage.size + 1}",
+            id = "user_${UUID.randomUUID()}", // Use UUID for truly unique user IDs
             firstName = request.firstName,
             lastName = request.lastName,
             email = request.email,
@@ -49,11 +43,11 @@ fun Route.authRoutes() {
         userStorage[request.email] = newGuest to request.password
 
         val token = JWT.create()
-            .withAudience(audience)
-            .withIssuer(issuer)
+            .withAudience(JwtConfig.audience)
+            .withIssuer(JwtConfig.issuer)
             .withClaim("email", newGuest.email)
-            .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)) // 1 day
-            .sign(Algorithm.HMAC256(secret))
+            .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
+            .sign(Algorithm.HMAC256(JwtConfig.secret))
 
         call.respond(HttpStatusCode.OK, AuthResponse(token = token))
     }
@@ -70,11 +64,11 @@ fun Route.authRoutes() {
         val (guest, storedPassword) = userRecord
         if (storedPassword == request.password) {
             val token = JWT.create()
-                .withAudience(audience)
-                .withIssuer(issuer)
+                .withAudience(JwtConfig.audience)
+                .withIssuer(JwtConfig.issuer)
                 .withClaim("email", guest.email)
-                .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)) // 1 day
-                .sign(Algorithm.HMAC256(secret))
+                .withExpiresAt(Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
+                .sign(Algorithm.HMAC256(JwtConfig.secret))
 
             call.respond(HttpStatusCode.OK, AuthResponse(token = token))
         } else {

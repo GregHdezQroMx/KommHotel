@@ -62,6 +62,8 @@ kotlin {
         iosSimulatorArm64Main.get().dependsOn(iosMain)
 
         jvmMain.dependencies {
+            // DIAGNOSTIC: Explicitly add ktor-client-core to the jvm target
+            implementation(libs.ktor.client.core)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.okio)
             implementation(libs.ktor.client.java)
