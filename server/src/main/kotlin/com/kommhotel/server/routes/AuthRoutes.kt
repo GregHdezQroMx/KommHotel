@@ -1,8 +1,10 @@
 package com.kommhotel.server.routes
 
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.kommhotel.server.JwtConfig
+import com.kommhotel.server.repository.UserRepository
 import com.kommhotel.shared.data.repository.AuthResponse
 import com.kommhotel.shared.model.Guest
 import com.kommhotel.shared.model.GuestPreferences
@@ -17,30 +19,44 @@ import java.util.Date
 import java.util.UUID
 
 @Serializable
-data class RegisterRequest(val firstName: String, val lastName: String, val email: String, val password: String)
+data class RegisterRequest(
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val password: String,
+    val phoneNumber: String? = ""
+)
 
 @Serializable
 data class LoginRequest(val email: String, val password: String)
 
-fun Route.authRoutes() {
+fun Route.authRoutes(userRepository: UserRepository) {
     post("/auth/register") {
-        val request = call.receive<RegisterRequest>()
+        val request = try {
+            call.receive<RegisterRequest>()
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, AuthResponse(error = "Invalid request format"))
+            return@post
+        }
 
-        if (userStorage.containsKey(request.email)) {
+        if (userRepository.findUserByEmail(request.email) != null) {
             call.respond(HttpStatusCode.OK, AuthResponse(error = "User with this email already exists."))
             return@post
         }
 
+        // Hashear la contraseña antes de guardarla
+        val hashedPassword = BCrypt.withDefaults().hashToString(12, request.password.toCharArray())
+
         val newGuest = Guest(
-            id = "user_${UUID.randomUUID()}", // Use UUID for truly unique user IDs
+            id = "user_${UUID.randomUUID()}",
             firstName = request.firstName,
             lastName = request.lastName,
             email = request.email,
-            phoneNumber = "",
+            phoneNumber = request.phoneNumber ?: "",
             preferences = GuestPreferences()
         )
 
-        userStorage[request.email] = newGuest to request.password
+        userRepository.createUser(newGuest, hashedPassword)
 
         val token = JWT.create()
             .withAudience(JwtConfig.audience)
@@ -55,14 +71,18 @@ fun Route.authRoutes() {
     post("/auth/login") {
         val request = call.receive<LoginRequest>()
 
-        val userRecord = userStorage[request.email]
+        val userRecord = userRepository.findUserByEmail(request.email)
         if (userRecord == null) {
             call.respond(HttpStatusCode.OK, AuthResponse(error = "User not found."))
             return@post
         }
 
-        val (guest, storedPassword) = userRecord
-        if (storedPassword == request.password) {
+        val (guest, storedHash) = userRecord
+        
+        // Verificar la contraseña usando BCrypt
+        val result = BCrypt.verifyer().verify(request.password.toCharArray(), storedHash)
+        
+        if (result.verified) {
             val token = JWT.create()
                 .withAudience(JwtConfig.audience)
                 .withIssuer(JwtConfig.issuer)

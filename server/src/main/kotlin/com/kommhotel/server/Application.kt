@@ -2,6 +2,9 @@ package com.kommhotel.server
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.kommhotel.server.db.DatabaseFactory
+import com.kommhotel.server.repository.BookingRepositoryImpl
+import com.kommhotel.server.repository.UserRepositoryImpl
 import com.kommhotel.server.routes.authRoutes
 import com.kommhotel.server.routes.bookingRoutes
 import com.kommhotel.server.routes.roomRoutes
@@ -25,6 +28,11 @@ fun main() {
 }
 
 fun Application.module() {
+    DatabaseFactory.init()
+
+    val userRepository = UserRepositoryImpl()
+    val bookingRepository = BookingRepositoryImpl()
+
     // Configure Content Negotiation to be more robust, matching the client's setup
     install(ContentNegotiation) {
         json(Json {
@@ -68,8 +76,8 @@ fun Application.module() {
             call.respondText("Server is healthy!")
         }
 
-        authRoutes()
+        authRoutes(userRepository)
         roomRoutes()
-        bookingRoutes()
+        bookingRoutes(userRepository, bookingRepository)
     }
 }

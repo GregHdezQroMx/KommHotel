@@ -4,7 +4,8 @@ KommHotel is a demonstration project built with Kotlin Multiplatform and Compose
 
 ## Features
 
-- **User Authentication:** Secure user registration and login using JWT (JSON Web Tokens).
+- **User Authentication:** Secure user registration and login using JWT (JSON Web Tokens) and **BCrypt** password hashing (OWASP compliant).
+- **Persistent Database:** Real-time data storage using **PostgreSQL** and Exposed ORM.
 - **Session Management:** Persistent session management across all platforms (`DataStore` on Android, `NSUserDefaults` on iOS, `localStorage` on Web).
 - **Room Listings:** Fetches and displays a list of available hotel rooms from the backend.
 - **Authenticated Requests:** Fetches user-specific data (e.g., "My Bookings") by sending authenticated requests to a protected server endpoint.
@@ -17,118 +18,80 @@ KommHotel is a demonstration project built with Kotlin Multiplatform and Compose
 - **Kotlin Multiplatform:** For sharing code between platforms.
 - **Compose Multiplatform:** For building a declarative, shared UI.
 - **Ktor:** Used for both the backend server and the multiplatform HTTP client.
+- **Exposed:** Kotlin SQL framework for PostgreSQL integration.
+- **BCrypt:** Secure password hashing following OWASP recommendations.
 - **Koin:** For Dependency Injection across all modules.
 - **Kotlinx Serialization:** For JSON parsing.
 - **Coroutines:** For asynchronous operations.
 - **Clean Architecture Principles:** The project is structured into three main modules:
     - `:shared`: A KMP module containing the core business logic, data layer (repositories, data sources), and presentation logic (ViewModels).
-    - `:server`: A Ktor-based backend server that provides the API endpoints for authentication and data.
-    - `:composeApp`: The main application module containing the shared UI and platform-specific entry points.
+    - `:server`: A Ktor-based backend server with PostgreSQL persistence.
+    - `:composeApp`: The main application module containing the shared UI.
+
+---
+
+## Database Setup (PostgreSQL)
+
+To run the project with persistence, you must have PostgreSQL installed and configured on your development machine.
+
+### 1. Installation (macOS via Homebrew)
+
+```bash
+brew install postgresql
+brew services start postgresql
+```
+
+### 2. Database Creation
+
+Access the PostgreSQL console:
+
+```bash
+psql postgres
+```
+
+Inside the prompt (`postgres=#`), execute:
+
+```sql
+CREATE DATABASE kommhotel;
+\password <your_mac_username>
+```
+*Note: Set the password to `password` as per current server configuration.*
+
+### 3. Verification
+
+To check registered users and their hashed passwords:
+
+```bash
+psql -U <your_mac_username> kommhotel
+```
+
+Run the query:
+```sql
+SELECT id, first_name, last_name, email, password FROM users;
+```
 
 ---
 
 ## Getting Started: How to Run
 
-Follow these steps to build and run the project on all supported platforms.
-
-### Prerequisites
-
-- **JDK 17 or higher.**
-- **Android Studio** (latest stable version recommended).
-- **Xcode** (for running the iOS app).
-
 ### 1. Run the Backend Server
 
-The server must be running for any of the client apps to function.
+1. Ensure PostgreSQL is running.
+2. Update `DatabaseFactory.kt` with your local database username if necessary.
+3. Open a terminal and run:
 
-1.  Open a terminal within Android Studio.
-2.  Execute the following Gradle task:
-
-    ```
+    ```bash
     ./gradlew :server:run
     ```
 
-3.  The server will start on `http://localhost:8080` (accessible as `0.0.0.0`). The client apps are already configured to connect to the correct IP address for each platform. Keep this terminal open.
-
 ### 2. Run the Android App
 
-1.  Select the `composeApp` run configuration in Android Studio.
-2.  Choose an Android emulator or a connected physical device.
-3.  Click the "Run" button (▶️).
-
-### 3. Run the iOS App
-
-**Note:** Requires a macOS machine with Xcode installed.
-
-1.  Open the iOS project in Xcode by opening the `.xcodeproj` file located in `composeApp/ios/`.
-2.  Select a simulator (e.g., "iPhone 15 Pro") and a team for signing.
-3.  Click the "Run" button (▶️) in Xcode.
-
-### 4. Run the Desktop App
-
-1.  Open a new terminal.
-2.  Execute the following Gradle task:
-
-    ```
-    ./gradlew :composeApp:run
-    ```
-
-### 5. Run the Web App
-
-1.  Open a new terminal.
-2.  Execute the following Gradle task. The `--continuous` flag enables hot-reloading.
-
-    ```
-    ./gradlew :composeApp:jsBrowserDevelopmentRun --continuous
-    ```
-
-3.  Once the build is complete, the terminal will output a URL (usually `http://localhost:8088/`). Open this URL in your web browser.
+1. Select the `composeApp` run configuration.
+2. Click the "Run" button (▶️).
 
 ---
-## Screenshots
-
-*To add the screenshots, create a `/screenshots` folder in the root of the project and place the image files inside.*
-
-**Login Screen (iOS)**
-
-<img src="./screenshots/Login%20iOs.png" width="300">
-
-**Home Screen (Android)**
-
-<img src="./screenshots/Room%20List%20Android.png" width="300">
-
-**Room Detail (Web)**
-
-<img src="./screenshots/Room%20details%20Web.png" width="500">
-
-**My Bookings Screen (Web)**
-
-<img src="./screenshots/My%20Bookings%20Web.png" width="500">
-
-**Signup Screen (Desktop)**
-
-<img src="./screenshots/Signup%20Desktop.png" width="500">
-
----
-
 ## Next Steps
 
-This project serves as a strong foundation. Here are some potential improvements and next steps:
-
-1.  **Database Integration:**
-    - Replace the in-memory `userStorage` and `bookings` lists in the server with a persistent database solution like H2 (for development) or a more robust option like PostgreSQL.
-    - Consider a multiplatform database for the client-side, like SQLDelight, for caching or offline capabilities.
-
-2.  **Production-like Network Testing:**
-    - To enable testing from physical Android/iOS devices, deploy the server to a dedicated machine on the local network (e.g., a Linux server).
-    - Build a distributable JAR for the server using `./gradlew :server:installDist`.
-    - Run the server on the Linux machine and update the `getBaseUrl()` function in the client apps to point to the server's network IP address.
-
-3.  **Enhance UI/UX:**
-    - Add animations and transitions between screens.
-    - Improve error handling with more user-friendly dialogs or snackbars instead of just text.
-    - Implement a more polished design system.
-
-4.  **Add Testing:**
-    - Write unit tests for ViewModels and Repositories in the `shared` module.
-    - Add UI tests for key user flows.
+1. **Multiplatform Database:** Implement SQLDelight in the `:shared` module for offline caching on mobile and web.
+2. **Payment Integration:** Mock or integrate a payment gateway for the booking flow.
+3. **Enhance UI/UX:** Add animations and a polished design system.
