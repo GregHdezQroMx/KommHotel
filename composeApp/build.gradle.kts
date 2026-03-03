@@ -34,28 +34,29 @@ kotlin {
             mainClass.set("com.kommhotel.app.MainKt")
         }
     }
-    
-    js(IR) {
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
         browser {
             commonWebpackConfig {
-                // Este nombre debe coincidir con el del index.html
                 outputFileName = "composeApp.js"
             }
         }
         binaries.executable()
     }
+
+    js(IR) {
+        browser()
+        binaries.executable()
+    }
     
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
-        }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.material.icons.core)
+            implementation(libs.compose.material.icons.extended)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
@@ -70,17 +71,38 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(compose.components.resources)
         }
+
+        val webMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        getByName("wasmJsMain") {
+            dependsOn(webMain)
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+            }
+        }
+
+        getByName("jsMain") {
+            dependsOn(webMain)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.compose.uiToolingPreview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+        }
+        
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-        }
-
-        jsMain.dependencies {
-            implementation(compose.html.core) // O compose.web.core
-            implementation(compose.runtime)
         }
     }
 }
@@ -113,7 +135,6 @@ android {
         }
     }
 
-    // Define build types to enable debug/release specific source sets
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false

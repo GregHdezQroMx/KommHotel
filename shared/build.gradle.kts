@@ -21,7 +21,12 @@ kotlin {
     
     jvm()
     
-    js {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+    }
+
+    js(IR) {
         browser()
     }
     
@@ -39,9 +44,21 @@ kotlin {
             // Ktor Client
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.contentNegotiation)
-            implementation(libs.ktor.client.auth) // <-- ADDED
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.serialization.kotlinx.json)
         }
+
+        // Nuevo source set compartido para la web (JS y Wasm)
+        val webMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                implementation(libs.ktor.client.js)
+            }
+        }
+
+        jsMain.get().dependsOn(webMain)
+        wasmJsMain.get().dependsOn(webMain)
+        
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
             implementation(libs.kotlinx.coroutines.android)
@@ -50,27 +67,14 @@ kotlin {
             implementation(libs.okio)
             implementation(libs.ktor.client.android)
         }
-        val iosMain by creating {
-            dependsOn(commonMain.get())
-            dependencies {
-                implementation(libs.androidx.datastore.preferences)
-                implementation(libs.okio)
-                implementation(libs.ktor.client.darwin)
-            }
-        }
-        iosArm64Main.get().dependsOn(iosMain)
-        iosSimulatorArm64Main.get().dependsOn(iosMain)
 
         jvmMain.dependencies {
-            // DIAGNOSTIC: Explicitly add ktor-client-core to the jvm target
             implementation(libs.ktor.client.core)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.okio)
             implementation(libs.ktor.client.java)
         }
-        jsMain.dependencies {
-            implementation(libs.ktor.client.js)
-        }
+        
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -98,12 +102,10 @@ android {
         buildConfig = true
     }
 
-    // This explicitly sets the Java target to 17, aligning it with Kotlin's target.
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
-// Make resource class public for other modules to access
 compose.resources.publicResClass = true
