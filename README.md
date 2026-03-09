@@ -78,17 +78,23 @@ You can choose between the Wasm or JS implementation for the manager dashboard:
 
 ---
 
-## Administrative Features (Back-Office)
+## Roadmap & Next Steps
 
-The Web targets have been transformed into a management tool including:
-- **Occupancy Metrics:** Real-time tracking of hotel room availability.
-- **Guest Experience Management:** Monitoring and resolving guest feedback and complaints.
-- **Inventory Control:** Direct management of room rates and availability.
-- **Remote Branding:** Centralized configuration of logos and themes for all client apps.
+### Fase 1: Infraestructura y Persistencia ✅
+- [x] Migración de almacenamiento en memoria a **PostgreSQL**.
+- [x] Implementación de seguridad con **BCrypt** (Hashing de contraseñas).
+- [x] Habilitación de targets **WasmJs** y **Js** para el entorno web.
+- [x] Arquitectura de código compartido web mediante **`webMain`**.
 
----
-## Next Steps
+### Fase 2: Dashboard de Gestión (En curso) 🛠️
+- [x] Diseño de la interfaz principal del Administrador (Dashboard).
+- [ ] **Gestión de Experiencia del Huésped:** Implementación de flujos para quejas, sugerencias y áreas de mejora.
+- [ ] **Métricas en Tiempo Real:** Visualización de ocupación e ingresos desde la base de datos.
 
-1. **Remote Configuration:** Fully integrate the branding service to allow real-time theme updates from the dashboard.
-2. **Booking Analytics:** Implement visual reports and charts for monthly revenue and booking trends.
-3. **Guest Communication:** Add a notification system to respond directly to guest feedback from the back-office.
+### Fase 3: Branding Remoto (Server-Driven UI) 🎨
+- [ ] **Configurador de UI:** Cambiar logo, colores primarios y nombre del hotel desde el Dashboard.
+- [ ] **Sincronización Global:** Aplicar los cambios de marca instantáneamente en las Apps de Android e iOS sin reinstalar.
+
+### Fase 4: Inventario y Analítica 📈
+- [ ] **Gestión de Habitaciones:** CRUD completo de inventario y precios dinámicos.
+- [ ] **Reportes Avanzados:** Generación de PDFs y estadísticas de rendimiento mensual.
